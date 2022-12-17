@@ -56,8 +56,30 @@
             type(vec3) :: unit_direction
             real(kind=real64) :: a
             
+            if(hit_sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0,r)) then
+                ray_color = vec3(1.0d0, 0.0d0, 0.0d0)
+                return
+            endif
+            
             unit_direction = .unit.(r%direction())
             a = 0.5d0 * (unit_direction%y() + 1.0d0)
             ray_color = (1.0d0-a)*vec3(1.0d0,1.0d0,1.0d0) + a*vec3(0.5d0,0.7d0,1.0d0)
         end function ray_color
+        
+        pure function hit_sphere(center,radius,r)
+            type(vec3), intent(IN) :: center
+            real(kind=real64), intent(IN) :: radius
+            type(ray), intent(IN) :: r
+            logical :: hit_sphere
+            
+            type(vec3) :: oc
+            real(kind=real64) :: a,b,c,discriminant
+            
+            oc = r%origin() - center
+            a = r%direction().dot.r%direction()
+            b = 2.0d0 * oc.dot.r%direction()
+            c = oc.dot.oc - radius**2
+            discriminant = b**2 - 4*a*c
+            hit_sphere = discriminant.gt.0
+        end function hit_sphere
     end program rtweekendfortran
