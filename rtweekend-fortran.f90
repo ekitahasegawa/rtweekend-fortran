@@ -1,36 +1,35 @@
 !****************************************************************************
 
     program rtweekendfortran
+    use vectors
+    use,intrinsic :: iso_fortran_env, only : real64
 
     implicit none
     
     ! Variables
     ! Constant variables
-    integer, parameter :: image_width = 256, image_height = 256, realkind=8
+    integer, parameter :: image_width = 256, image_height = 256
     character(len=*), parameter :: filename = "image.ppm", newln = new_line('A')
     
     !Other variables
-    integer :: i,j,lun,ir,ig,ib
-    real(realkind) :: r,g,b
+    integer :: i,j,filelun,ir,ig,ib
+    real(kind=real64) :: r,g,b
+    
+    !Vector Testing
+    type(vec3) :: color,v1,v2
 
     ! Body of rtweekendfortran
-    open(newunit=lun,file=filename)
-    write(lun,*) "P3"//newln, image_width, " ", image_height, newln//"255"//newln
+    open(newunit=filelun,file=filename)
+    write(filelun,*) "P3"//newln, image_width, " ", image_height, newln//"255"//newln
         
     do j=0,image_height-1
         do i=0,image_width-1
-            r = real(i,kind=realkind) / real(image_width-1,kind=realkind)
-            g = real(j,kind=realkind) / real(image_height-1,kind=realkind)
-            b = 0.25
-            
-            ir = int(255.999*r)
-            ig = int(255.999*g)
-            ib = int(255.999*b)
-            
-            write(lun,*) ir,ig,ib
+            color = vec3(real(i,kind=real64) / real(image_width-1,kind=real64),&
+                    real(j,kind=real64) / real(image_height-1,kind=real64),&
+                    0.25d0)
+            call write_color(color,lun=filelun)
         enddo
     enddo
+    close(filelun)
     
-    close(lun)
     end program rtweekendfortran
-
