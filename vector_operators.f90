@@ -16,6 +16,13 @@ submodule (vectors) vector_operators
         v2%e = v1%e + t
     end function vector_plus_scalar
     
+    pure module elemental function scalar_plus_vector(t,v1) result(v2)
+        type(vec3), intent(IN) :: v1
+        real(kind=real64), intent(IN) :: t
+        type(vec3) :: v2
+        v2%e = v1%e + t
+    end function scalar_plus_vector
+    
     !Next the subtraction functions
     pure module elemental function vector_minus_vector(v1,v2) result(v3)
         type(vec3), intent(IN) :: v1,v2
@@ -30,6 +37,13 @@ submodule (vectors) vector_operators
         v2%e = v1%e - t
     end function vector_minus_scalar
     
+    pure module elemental function scalar_minus_vector(t,v1) result(v2)
+        type(vec3), intent(IN) :: v1
+        real(kind=real64), intent(IN) :: t
+        type(vec3) :: v2
+        v2%e = v1%e - t
+    end function scalar_minus_vector
+    
     pure module elemental function vector_negative(v1) result(v2)
         type(vec3), intent(IN) :: v1
         type(vec3) :: v2
@@ -43,6 +57,13 @@ submodule (vectors) vector_operators
         type(vec3) :: v2
         v2%e = v1%e * t
     end function vector_times_scalar
+    
+    pure module elemental function scalar_times_vector(t,v1) result(v2)
+        type(vec3), intent(IN) :: v1
+        real(kind=real64), intent(IN) :: t
+        type(vec3) :: v2
+        v2%e = v1%e * t
+    end function scalar_times_vector
     
     !Next division
     pure module elemental function vector_div_scalar(v1,t) result(v2)
