@@ -1,5 +1,6 @@
 submodule (vectors) vector_operators
     use, intrinsic :: iso_fortran_env, only : real64
+    implicit none
     contains
     
     !First the addition functions

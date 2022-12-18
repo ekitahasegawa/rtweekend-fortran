@@ -7,11 +7,11 @@ module vectors
         real(kind=real64), dimension(3) :: e
     contains
         private
-        procedure, public :: x,y,z
+        procedure, public :: x,y,z,val,length_squared
     end type vec3
     
     interface vec3
-        module procedure vec_init_default,vec_init_r8
+        module procedure vec_init_default,vec_init_r8,vec_init_vec
     end interface vec3
     
     interface write(formatted)
@@ -125,6 +125,12 @@ module vectors
             z = this%e(3)
         end function z
         
+        pure function val(this)
+            class(vec3), intent(IN) :: this
+            real(kind=real64), dimension(3) :: val
+            val = this%e
+        end function val
+        
         pure function vec_init_default() result(v)
             type(vec3) :: v
             v%e = [0d0,0d0,0d0]
@@ -136,6 +142,12 @@ module vectors
             v%e = [e1,e2,e3]
         end function vec_init_r8
         
+        pure function vec_init_vec(w) result(v)
+            real(kind=real64), dimension(3), intent(IN) :: w
+            type(vec3) :: v
+            v%e = w
+        end function vec_init_vec
+        
         pure function length(this)
             type(vec3), intent(IN) :: this
             real(kind=real64) :: length
@@ -143,7 +155,7 @@ module vectors
         end function length
         
         pure function length_squared(this)
-            type(vec3), intent(IN) :: this
+            class(vec3), intent(IN) :: this
             real(kind=real64) :: length_squared
             length_squared = dot_product(this%e,this%e)
         end function length_squared

@@ -6,6 +6,8 @@
 # Image files
 *.ppm
 *.u2d
+GPUCache/
+VTune*
 
 # User-specific files
 *.rsuser
