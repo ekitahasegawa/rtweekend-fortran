@@ -178,12 +178,11 @@ module vectors
             endif
             
             scale = 1.0d0/real(samples_per_pixel,kind=real64)
-            r = color%x()*scale
-            g = color%y()*scale
-            b = color%z()*scale
+            r = sqrt(color%x()*scale)
+            g = sqrt(color%y()*scale)
+            b = sqrt(color%z()*scale)
         
             write(outlun,*) int(256*clamp(r,0.0d0,maxclamp)),int(256*clamp(g,0.0d0,maxclamp)),int(256*clamp(b,0.0d0,maxclamp))
-            !write(outlun,*) int(255.999*color%x()),int(255.999*color%y()),int(255.999*color%z())
         end subroutine write_color
         
         subroutine writevec_form(vec,unit,iotype,v_list,iostat,iomsg)
@@ -220,4 +219,29 @@ module vectors
             type(vec3) :: v2
             v2%e = v1%e/norm2(v1%e)
         end function unit_vector
+        
+        function random_in_unit_sphere()
+            type(vec3) :: random_in_unit_sphere
+            random_in_unit_sphere = vec3(1.0d0,1.0d0,1.0d0)
+            
+            do while((random_in_unit_sphere.dot.random_in_unit_sphere).gt.1.0d0)
+                call random_number(random_in_unit_sphere%e)
+            enddo
+        end function random_in_unit_sphere
+        
+        function random_unit_vector()
+            type(vec3) :: random_unit_vector
+            random_unit_vector = .unit.(random_in_unit_sphere())
+        end function random_unit_vector
+        
+        function random_in_hemisphere(nhat)
+            type(vec3), intent(IN) :: nhat
+            type(vec3) :: random_in_hemisphere
+            
+            random_in_hemisphere = random_in_unit_sphere()
+            
+            if((random_in_hemisphere.dot.nhat).lt.0.0d0) then
+                random_in_hemisphere = -1.0d0 * random_in_hemisphere
+            endif
+        end function random_in_hemisphere
 end module vectors

@@ -13,14 +13,14 @@
     ! Variables
     ! Constant variables
     real(kind=real64), parameter :: aspect_ratio = 16.0d0/9.0d0
-    integer, parameter :: image_width = 1080, image_height = int(image_width/aspect_ratio),samples_per_pixel=100
+    integer, parameter :: image_width = 1920, image_height = int(image_width/aspect_ratio),samples_per_pixel=100,max_depth=50
     character(len=*), parameter :: filename = "image.ppm", newln = new_line('A')
     
     !World Variables
     type(hittable_list) :: world
     
     !Camera Variables
-    real(kind=real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height, focal_length=1.0d0
+    real(kind=real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height,focal_length=1.0d0
     type(vec3) :: world_origin,horizontal,vertical,lower_left_corner
     type(camera) :: cam
     
@@ -58,7 +58,7 @@
                 
                 r = cam%get_ray(u,v)
             
-                pixel_color = pixel_color + ray_color(r,world)
+                pixel_color = pixel_color + ray_color(r,world,max_depth)
             enddo
             call write_color(pixel_color,samples_per_pixel,lun=filelun)
         enddo
@@ -66,18 +66,26 @@
     close(filelun)
     
     contains
-        function ray_color(r, world)
+        recursive function ray_color(r, world,depth)
             use rtweekend, only : infinity
             type(ray), intent(IN) :: r
             type(hittable_list), intent(IN) :: world
+            integer, intent(IN) :: depth
             type(vec3) :: ray_color
             
             type(hit_record) :: rec
             real(kind=real64) :: t
-            type(vec3) :: unit_direction
+            real(kind=real64), parameter :: smallnum=1d-4
+            type(vec3) :: unit_direction,targetvec
             
-            if(world%hit(r,0.0d0,infinity,rec)) then
-                ray_color = 0.5d0 * (rec%normal + vec3(1.0d0,1.0d0,1.0d0))
+            if(depth.le.0) then
+                ray_color = vec3(0.0d0,0.0d0,0.0d0)
+                return
+            endif
+            
+            if(world%hit(r,smallnum,infinity,rec)) then
+                targetvec = rec%p + rec%normal + random_in_hemisphere(rec%normal)
+                ray_color = 0.5d0 * ray_color(ray(rec%p,targetvec - rec%p),world,depth-1)
                 return
             endif
             
