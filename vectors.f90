@@ -160,20 +160,30 @@ module vectors
             length_squared = dot_product(this%e,this%e)
         end function length_squared
         
-        subroutine write_color(color,lun)
+        subroutine write_color(color,samples_per_pixel,lun)
             use, intrinsic :: iso_fortran_env, only : output_unit
+            use rtweekend, only : clamp
             type(vec3), intent(IN) :: color
+            integer, intent(IN) :: samples_per_pixel
             integer, optional, intent(IN) :: lun
         
             integer :: outlun
+            real(kind=real64) :: r,g,b,scale
+            real(kind=real64), parameter :: maxclamp = nearest(1.0d0,-1.0d0)
         
             if(present(lun)) then
                 outlun=lun
             else
                 outlun=output_unit
             endif
+            
+            scale = 1.0d0/real(samples_per_pixel,kind=real64)
+            r = color%x()*scale
+            g = color%y()*scale
+            b = color%z()*scale
         
-            write(outlun,*) int(255.999*color%x()),int(255.999*color%y()),int(255.999*color%z())
+            write(outlun,*) int(256*clamp(r,0.0d0,maxclamp)),int(256*clamp(g,0.0d0,maxclamp)),int(256*clamp(b,0.0d0,maxclamp))
+            !write(outlun,*) int(255.999*color%x()),int(255.999*color%y()),int(255.999*color%z())
         end subroutine write_color
         
         subroutine writevec_form(vec,unit,iotype,v_list,iostat,iomsg)

@@ -5,6 +5,7 @@
     use rays
     use hittables
     use rtweekend
+    use cameras
     use,intrinsic :: iso_fortran_env, only : real64,output_unit
 
     implicit none
@@ -12,7 +13,7 @@
     ! Variables
     ! Constant variables
     real(kind=real64), parameter :: aspect_ratio = 16.0d0/9.0d0
-    integer, parameter :: image_width = 3840, image_height = int(image_width/aspect_ratio)
+    integer, parameter :: image_width = 1080, image_height = int(image_width/aspect_ratio),samples_per_pixel=100
     character(len=*), parameter :: filename = "image.ppm", newln = new_line('A')
     
     !World Variables
@@ -21,14 +22,18 @@
     !Camera Variables
     real(kind=real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height, focal_length=1.0d0
     type(vec3) :: world_origin,horizontal,vertical,lower_left_corner
+    type(camera) :: cam
     
     !Other variables
-    integer :: i,j,filelun
-    real(kind=real64) :: s,t,start_time,stop_time
-    type(vec3) :: color
+    integer :: i,j,n,filelun
+    real(kind=real64) :: u,v,start_time,stop_time,rnums(2,samples_per_pixel)
+    type(vec3) :: pixel_color
     type(ray) :: r
 
     ! Body of rtweekendfortran
+    
+    cam = camera()
+    call random_init(.true.,.false.)    
     
     call world%add(sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0))
     call world%add(sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0))
@@ -41,18 +46,21 @@
     open(newunit=filelun,file=filename)
     write(filelun,*) "P3"//newln, image_width, " ", image_height, newln//"255"//newln
         
-    do j=0,image_height-1
-        write(output_unit,fmt='(A,I5,A)',advance='no') "Scanlines remaining:",image_height-j,char(13)
-        call flush(output_unit)
+    do j=image_height-1,0,-1
+        write(output_unit,fmt='(A,I5,A)',advance='no') "Scanlines remaining:",j,char(13)
+        flush output_unit
         do i=0,image_width-1
-            s = real(i,kind=real64)/(image_width-1)
-            t = real(j,kind=real64)/(image_height-1)
+            call random_number(rnums)
+            pixel_color = vec3(0.0d0,0.0d0,0.0d0)
+            do n=1,samples_per_pixel
+                u = (real(i,kind=real64)+rnums(1,n))/(image_width-1)
+                v = (real(j,kind=real64)+rnums(2,n))/(image_height-1)
+                
+                r = cam%get_ray(u,v)
             
-            r = ray(origin=world_origin,&
-                    direction=lower_left_corner + s*horizontal + (1.0d0-t)*vertical - world_origin)
-            
-            color = ray_color(r,world)
-            call write_color(color,lun=filelun)
+                pixel_color = pixel_color + ray_color(r,world)
+            enddo
+            call write_color(pixel_color,samples_per_pixel,lun=filelun)
         enddo
     enddo
     close(filelun)

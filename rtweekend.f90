@@ -9,4 +9,17 @@ module rtweekend
             real(kind=real64) :: degrees_to_radians
             degrees_to_radians = deg * (pi/180.0d0)
         end function degrees_to_radians
+        
+        elemental function clamp(x,min,max)
+            real(kind=real64), intent(IN) :: x,min,max
+            real(kind=real64) :: clamp
+            
+            if(x.lt.min) then
+                clamp = min
+            else if (x.gt.max) then
+                clamp = max
+            else
+                clamp = x
+            endif
+        end function clamp
 end module rtweekend

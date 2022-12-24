@@ -79,10 +79,6 @@ module hittables
         procedure, private :: assign_object
         generic, public :: assignment(=) => assign_object
     end type hittable_object
-    
-    !interface hittable_object
-    !    module procedure :: init_object
-    !end interface hittable_object
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type, extends(hittable) :: hittable_list
         private
@@ -93,11 +89,6 @@ module hittables
         procedure, public :: list_size
     end type hittable_list
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
-    !Interface for hittable list
-    !Constructor
-    !interface hittable_list
-    !    module procedure :: init_list
-    !end interface hittable_list
     
     interface
         module function hit_objects(this,r,t_min,t_max,rec)
@@ -139,10 +130,6 @@ module hittables
     pure subroutine assign_object(this,obj)
         class(hittable_object), intent(INOUT) :: this
         class(hittable), intent(IN) :: obj
-        
-        !class(hittable), allocatable :: tmp
-        !allocate(tmp,source=obj)
-        !call move_alloc(from=tmp,to=this%object)
         
         allocate(this%object,source=obj)
     end subroutine assign_object
