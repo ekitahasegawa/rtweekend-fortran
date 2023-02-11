@@ -8,6 +8,7 @@
 *.u2d
 GPUCache/
 VTune*
+*.db3
 
 # User-specific files
 *.rsuser
