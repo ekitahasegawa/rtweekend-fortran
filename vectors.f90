@@ -171,6 +171,12 @@ module vectors
             length_squared = dot_product(this%e,this%e)
         end function length_squared
         
+        pure function reflect(v_in,n) result(v_out)
+            type(vec3), intent(IN) :: v_in,n
+            type(vec3) :: v_out
+            v_out = v_in - 2.0d0*(v_in.dot.n)*n
+        end function reflect
+        
         subroutine write_color(color,samples_per_pixel,lun)
             use, intrinsic :: iso_fortran_env, only : output_unit
             use rtweekend, only : clamp
