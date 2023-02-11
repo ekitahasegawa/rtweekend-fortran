@@ -12,7 +12,7 @@
     
     ! Variables
     ! Constant variables
-    real(kind=real64), parameter :: aspect_ratio = 16.0d0/9.0d0
+    real(real64), parameter :: aspect_ratio = 16.0d0/9.0d0
     integer, parameter :: image_width = 1920, image_height = int(image_width/aspect_ratio),samples_per_pixel=100,max_depth=50
     character(len=*), parameter :: filename = "image.ppm", newln = new_line('A')
     
@@ -20,13 +20,13 @@
     type(hittable_list) :: world
     
     !Camera Variables
-    real(kind=real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height,focal_length=1.0d0
+    real(real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height,focal_length=1.0d0
     type(vec3) :: world_origin,horizontal,vertical,lower_left_corner
     type(camera) :: cam
     
     !Other variables
     integer :: i,j,n,filelun
-    real(kind=real64) :: u,v,start_time,stop_time,rnums(2,samples_per_pixel)
+    real(real64) :: u,v,start_time,stop_time,rnums(2,samples_per_pixel)
     type(vec3) :: pixel_color
     type(ray) :: r
 
@@ -74,8 +74,8 @@
             type(vec3) :: ray_color
             
             type(hit_record) :: rec
-            real(kind=real64) :: t
-            real(kind=real64), parameter :: smallnum=1d-4
+            real(real64) :: t
+            real(real64), parameter :: smallnum=1d-4
             type(vec3) :: unit_direction,targetvec
             
             if(depth.le.0) then

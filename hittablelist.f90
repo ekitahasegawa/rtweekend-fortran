@@ -5,7 +5,7 @@ submodule (hittables) hittablelist
     
     module procedure hit_objects        
         type(hit_record) :: tmp_rec
-        real(kind=real64) :: closest_so_far
+        real(real64) :: closest_so_far
         integer :: i
         
         hit_objects = .false.

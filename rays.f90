@@ -46,7 +46,7 @@ module rays
         
         pure function at(this,t)
             class(ray), intent(IN) :: this
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: at
             at = this%orig + (t*this%dir)
         end function at

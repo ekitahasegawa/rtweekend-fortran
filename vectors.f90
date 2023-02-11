@@ -4,7 +4,7 @@ module vectors
     
     type vec3
         private
-        real(kind=real64), dimension(3) :: e
+        real(real64), dimension(3) :: e
     contains
         private
         procedure, public :: x,y,z,val,length_squared
@@ -38,12 +38,12 @@ module vectors
     
         pure module elemental function vector_plus_scalar(v1,t) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function vector_plus_scalar
           pure module elemental function scalar_plus_vector(t,v1) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function scalar_plus_vector
     end interface
@@ -56,13 +56,13 @@ module vectors
     
         pure module elemental function vector_minus_scalar(v1,t) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function vector_minus_scalar
     
         pure module elemental function scalar_minus_vector(t,v1) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function scalar_minus_vector
     
@@ -75,13 +75,13 @@ module vectors
     interface operator(*)
         pure module elemental function vector_times_scalar(v1,t) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function vector_times_scalar
     
         pure module elemental function scalar_times_vector(t,v1) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function scalar_times_vector
     end interface
@@ -89,7 +89,7 @@ module vectors
     interface operator(/)
         pure module elemental function vector_div_scalar(v1,t) result(v2)
             type(vec3), intent(IN) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function vector_div_scalar
     end interface
@@ -102,32 +102,32 @@ module vectors
     
         pure module elemental subroutine vector_assign_real(v1,t)
             type(vec3), intent(OUT) :: v1
-            real(kind=real64), intent(IN) :: t
+            real(real64), intent(IN) :: t
         end subroutine vector_assign_real
     end interface
         
     contains
         pure function x(this)
             class(vec3), intent(IN) :: this
-            real(kind=real64) :: x
+            real(real64) :: x
             x = this%e(1)
         end function x
         
         pure function y(this)
             class(vec3), intent(IN) :: this
-            real(kind=real64) :: y
+            real(real64) :: y
             y = this%e(2)
         end function y
         
         pure function z(this)
             class(vec3), intent(IN) :: this
-            real(kind=real64) :: z
+            real(real64) :: z
             z = this%e(3)
         end function z
         
         pure function val(this)
             class(vec3), intent(IN) :: this
-            real(kind=real64), dimension(3) :: val
+            real(real64), dimension(3) :: val
             val = this%e
         end function val
         
@@ -137,26 +137,26 @@ module vectors
         end function vec_init_default
         
         pure function vec_init_r8(e1,e2,e3) result(v)
-            real(kind=real64), intent(IN) :: e1,e2,e3
+            real(real64), intent(IN) :: e1,e2,e3
             type(vec3) :: v
             v%e = [e1,e2,e3]
         end function vec_init_r8
         
         pure function vec_init_vec(w) result(v)
-            real(kind=real64), dimension(3), intent(IN) :: w
+            real(real64), dimension(3), intent(IN) :: w
             type(vec3) :: v
             v%e = w
         end function vec_init_vec
         
         pure function length(this)
             type(vec3), intent(IN) :: this
-            real(kind=real64) :: length
+            real(real64) :: length
             length=norm2(this%e)
         end function length
         
         pure function length_squared(this)
             class(vec3), intent(IN) :: this
-            real(kind=real64) :: length_squared
+            real(real64) :: length_squared
             length_squared = dot_product(this%e,this%e)
         end function length_squared
         
@@ -168,8 +168,8 @@ module vectors
             integer, optional, intent(IN) :: lun
         
             integer :: outlun
-            real(kind=real64) :: r,g,b,scale
-            real(kind=real64), parameter :: maxclamp = nearest(1.0d0,-1.0d0)
+            real(real64) :: r,g,b,scale
+            real(real64), parameter :: maxclamp = nearest(1.0d0,-1.0d0)
         
             if(present(lun)) then
                 outlun=lun
@@ -210,7 +210,7 @@ module vectors
         
         pure function vec_dot_vec(v1,v2) result(r)
             type(vec3), intent(IN) :: v1,v2
-            real(kind=real64) :: r
+            real(real64) :: r
             r = dot_product(v1%e,v2%e)
         end function vec_dot_vec
         

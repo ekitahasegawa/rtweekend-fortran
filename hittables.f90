@@ -6,7 +6,7 @@ module hittables
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type hit_record
         type(vec3) :: p,normal
-        real(kind=real64) :: t
+        real(real64) :: t
         logical :: front_face
         class(material), pointer :: mat_ptr => NULL()
     contains
@@ -23,7 +23,7 @@ module hittables
             import ray,hit_record,real64,hittable
             class(hittable), intent(IN) :: this
             type(ray), intent(IN) :: r
-            real(kind=real64), intent(IN) :: t_min,t_max
+            real(real64), intent(IN) :: t_min,t_max
             type(hit_record), intent(INOUT) :: rec
         end function hitobj
     end interface
@@ -68,7 +68,7 @@ module hittables
             import sphere
             class(sphere), intent(IN) :: this
             type(ray), intent(IN) :: r
-            real(kind=real64), intent(IN) :: t_min,t_max
+            real(real64), intent(IN) :: t_min,t_max
             type(hit_record), intent(INOUT) :: rec
             logical :: hit_sphere
         end function hit_sphere
@@ -80,14 +80,14 @@ module hittables
         module function init_sphere_ptr(cen,r,mat_ptr)
             import material
             type(vec3), intent(IN) :: cen
-            real(kind=real64), intent(IN) :: r
+            real(real64), intent(IN) :: r
             class(material), pointer, intent(IN) :: mat_ptr
             type(sphere) :: init_sphere
         end function init_sphere_ptr
     
         pure module function radius(this)
             class(sphere), intent(IN) :: this
-            real(kind=real64) :: radius
+            real(real64) :: radius
         end function radius
     
         pure module function center(this)
@@ -117,7 +117,7 @@ module hittables
             import hittable_list
             class(hittable_list), intent(IN) :: this
             type(ray), intent(IN) :: r
-            real(kind=real64), intent(IN) :: t_min,t_max
+            real(real64), intent(IN) :: t_min,t_max
             type(hit_record), intent(INOUT) :: rec
             logical :: hit_objects
         end function hit_objects

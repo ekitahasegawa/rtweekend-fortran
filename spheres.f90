@@ -6,7 +6,7 @@ submodule (hittables) spheres
     
     module procedure hit_sphere       
         type(vec3) :: oc,outward_normal
-        real(kind=real64) :: a,half_b,c,discriminant,root,sqrtd
+        real(real64) :: a,half_b,c,discriminant,root,sqrtd
             
         oc = r%origin() - this%c
         a = r%direction().dot.r%direction()
