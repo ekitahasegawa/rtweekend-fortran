@@ -34,7 +34,7 @@ module hittables
     end type material
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     abstract interface
-        logical function scatter_ray(this,r_in,rec,attenuation,scattered)
+        function scatter_ray(this,r_in,rec,attenuation,scattered)
             use rays, only : ray
             use vectors, only : vec3
             import material
@@ -42,9 +42,41 @@ module hittables
             class(material), intent(IN) :: this
             type(ray), intent(IN) :: r_in
             type(hit_record), intent(IN) :: rec
-            type(vec3), intent(IN) :: attenuation
+            type(vec3), intent(OUT) :: attenuation
             type(ray), intent(OUT) :: scattered
+            logical :: scatter_ray
         end function scatter_ray
+    end interface
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    type, extends(material) :: lambertian
+        type(vec3), public :: albedo
+    contains
+        procedure, public :: scatter=>lambertian_scatter
+    end type lambertian
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    interface lambertian
+        module procedure :: init_lambertian_default,init_lambertian
+    end interface lambertian
+    
+    interface
+        module function lambertian_scatter(this,r_in,rec,attenuation,scattered)
+            import lambertian
+            class(lambertian), intent(IN) :: this
+            type(ray), intent(IN) :: r_in
+            type(hit_record), intent(IN) :: rec
+            type(vec3), intent(OUT) :: attenuation
+            type(ray), intent(OUT) :: scattered
+            logical :: lambertian_scatter
+        end function lambertian_scatter
+    
+        pure module function init_lambertian_default()
+            type(lambertian) :: init_lambertian_default
+        end function init_lambertian_default
+        
+        module function init_lambertian(c)
+            type(vec3), intent(IN) :: c
+            type(lambertian) init_lambertian
+        end function init_lambertian
     end interface
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type, extends(hittable) :: sphere
