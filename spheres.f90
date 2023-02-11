@@ -33,6 +33,7 @@ submodule (hittables) spheres
         
         rec%t = root
         rec%p = r%at(rec%t)
+        rec%mat_ptr => this%mat_ptr
         outward_normal = (rec%p - this%c) / this%r
         call rec%set_face_normal(r,outward_normal)
         hit_sphere = .true.
@@ -43,11 +44,12 @@ submodule (hittables) spheres
         init_sphere_default%c = vec3(0.0d0,0.0d0,0.0d0)
     end procedure init_sphere_default
     
-    module procedure init_sphere
+    module procedure init_sphere_ptr
         type(sphere) :: init_sphere
         init_sphere%c = cen
         init_sphere%r = r
-    end procedure init_sphere
+        init_sphere%mat_ptr => mat_ptr
+    end procedure init_sphere_ptr
     
     module procedure radius
         radius = this%r

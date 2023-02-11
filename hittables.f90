@@ -8,6 +8,7 @@ module hittables
         type(vec3) :: p,normal
         real(kind=real64) :: t
         logical :: front_face
+        class(material), pointer :: mat_ptr => NULL()
     contains
         procedure :: set_face_normal
     end type hit_record
@@ -27,10 +28,30 @@ module hittables
         end function hitobj
     end interface
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    type, abstract :: material
+    contains
+        procedure (scatter_ray), public, deferred :: scatter
+    end type material
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    abstract interface
+        logical function scatter_ray(this,r_in,rec,attenuation,scattered)
+            use rays, only : ray
+            use vectors, only : vec3
+            import material
+            import hit_record
+            class(material), intent(IN) :: this
+            type(ray), intent(IN) :: r_in
+            type(hit_record), intent(IN) :: rec
+            type(vec3), intent(IN) :: attenuation
+            type(ray), intent(OUT) :: scattered
+        end function scatter_ray
+    end interface
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type, extends(hittable) :: sphere
         private
         type(vec3) :: c
         real(real64) :: r
+        class(material), pointer :: mat_ptr
     contains
         procedure, public :: hit=>hit_sphere
     end type sphere
@@ -38,7 +59,7 @@ module hittables
     !Interfaces for porcedures in the sphere submodule
     !Constructor interface
     interface sphere
-        module procedure :: init_sphere_default,init_sphere
+        module procedure :: init_sphere_default,init_sphere_ptr
     end interface sphere
     
     !Other
@@ -56,11 +77,13 @@ module hittables
             type(sphere) :: init_sphere_default
         end function init_sphere_default
     
-        pure module function init_sphere(cen,r)
+        module function init_sphere_ptr(cen,r,mat_ptr)
+            import material
             type(vec3), intent(IN) :: cen
             real(kind=real64), intent(IN) :: r
+            class(material), pointer, intent(IN) :: mat_ptr
             type(sphere) :: init_sphere
-        end function init_sphere
+        end function init_sphere_ptr
     
         pure module function radius(this)
             class(sphere), intent(IN) :: this
@@ -109,25 +132,7 @@ module hittables
             integer :: list_size
         end function list_size
     end interface
-!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
-    type, abstract :: material
-    contains
-        procedure (scatter_ray), public, deferred :: scatter
-    end type material
-!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
-    abstract interface
-        logical function scatter_ray(this,r_in,rec,attenuation,scattered)
-            use rays, only : ray
-            use vectors, only : vec3
-            import material
-            import hit_record
-            class(material), intent(IN) :: this
-            type(ray), intent(IN) :: r_in
-            type(hit_record), intent(IN) :: rec
-            type(vec3), intent(IN) :: attenuation
-            type(ray), intent(OUT) :: scattered
-        end function scatter_ray
-    end interface
+
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     contains
     

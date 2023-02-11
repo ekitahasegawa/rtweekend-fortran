@@ -35,8 +35,8 @@
     cam = camera()
     call random_init(.true.,.false.)    
     
-    call world%add(sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0))
-    call world%add(sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0))
+    !call world%add(sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0))
+    !call world%add(sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0))
         
     world_origin = vec3(0.0d0,0.0d0,0.0d0)
     horizontal = vec3(viewport_width,0.0d0,0.0d0)
