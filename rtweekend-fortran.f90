@@ -13,7 +13,7 @@
     ! Variables
     ! Constant variables
     real(real64), parameter :: aspect_ratio = 16.0d0/9.0d0
-    integer, parameter :: image_width = 1920, image_height = int(image_width/aspect_ratio),samples_per_pixel=100,max_depth=50
+    integer, parameter :: image_width = 400, image_height = int(image_width/aspect_ratio),samples_per_pixel=100,max_depth=50
     character(len=*), parameter :: filename = "image.ppm", newln = new_line('A')
     
     !World Variables
@@ -21,7 +21,8 @@
     type(sphere) :: sphere_ground,sphere_center,sphere_left,sphere_right
     
     !Materials
-    type(lambertian), target :: material_center,material_ground,material_left,material_right
+    type(metal), target :: material_left, material_right
+    type(lambertian), target :: material_center,material_ground
     real(real64), dimension(3), parameter :: color_center=[0.7d0,0.3d0,0.3d0],color_ground=[0.8d0,0.8d0,0.0d0],color_left=0.8d0,color_right=[0.8d0,0.6d0,0.2d0]
     
     !Camera Variables
@@ -42,8 +43,8 @@
     
     material_ground = lambertian(vec3(color_ground))
     material_center = lambertian(vec3(color_center))
-    material_left = lambertian(vec3(color_left))
-    material_right = lambertian(vec3(color_right))
+    material_left = metal(vec3(color_left))
+    material_right = metal(vec3(color_right))
     
     sphere_center=sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0,material_center)
     sphere_ground=sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0,material_ground)

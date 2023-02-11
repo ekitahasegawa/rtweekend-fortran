@@ -79,6 +79,37 @@ module hittables
         end function init_lambertian
     end interface
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    type, extends(material) :: metal
+        type(vec3), public :: albedo
+    contains
+        procedure, public :: scatter=>metal_scatter
+    end type metal
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    interface metal
+        module procedure :: init_metal_default,init_metal
+    end interface metal
+    
+    interface
+        module function metal_scatter(this,r_in,rec,attenuation,scattered)
+            import metal
+            class(metal), intent(IN) :: this
+            type(ray), intent(IN) :: r_in
+            type(hit_record), intent(IN) :: rec
+            type(vec3), intent(OUT) :: attenuation
+            type(ray), intent(OUT) :: scattered
+            logical :: metal_scatter
+        end function metal_scatter
+    
+        pure module function init_metal_default() result(init_metal)
+            type(metal) :: init_metal
+        end function init_metal_default
+        
+        module function init_metal(c)
+            type(vec3), intent(IN) :: c
+            type(metal) init_metal
+        end function init_metal
+    end interface
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type, extends(hittable) :: sphere
         private
         type(vec3) :: c
