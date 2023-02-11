@@ -40,16 +40,21 @@ submodule (hittables) spheres
     end procedure hit_sphere
     
     module procedure init_sphere_default
-        init_sphere_default%r = 0.0d0
-        init_sphere_default%c = vec3(0.0d0,0.0d0,0.0d0)
+        init_sphere%r = 0.5d0
+        init_sphere%c = vec3(0.0d0,0.0d0,-1.0d0)
     end procedure init_sphere_default
     
     module procedure init_sphere_ptr
-        type(sphere) :: init_sphere
         init_sphere%c = cen
         init_sphere%r = r
         init_sphere%mat_ptr => mat_ptr
     end procedure init_sphere_ptr
+    
+    module procedure init_sphere_ref
+        init_sphere%c = cen
+        init_sphere%r = r
+        init_sphere%mat_ptr => mat
+    end procedure init_sphere_ref
     
     module procedure radius
         radius = this%r

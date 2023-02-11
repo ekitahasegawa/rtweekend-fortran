@@ -42,6 +42,10 @@ submodule (vectors) vector_operators
         v2%e = v1%e * t
     end procedure scalar_times_vector
     
+    module procedure vector_times_vector
+        v3%e = v1%e * v2%e
+    end procedure vector_times_vector
+    
     !Next division
     module procedure vector_div_scalar
         v2%e = v1%e/t

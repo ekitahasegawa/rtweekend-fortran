@@ -37,7 +37,6 @@ submodule (hittables) hittablelist
     end procedure add_hittable
     
     module procedure list_size
-        integer :: list_size
         list_size=size(this%objects)
     end procedure list_size
 end submodule hittablelist

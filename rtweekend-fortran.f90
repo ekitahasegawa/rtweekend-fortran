@@ -18,6 +18,11 @@
     
     !World Variables
     type(hittable_list) :: world
+    type(sphere) :: sphere_ground,sphere_center,sphere_left,sphere_right
+    
+    !Materials
+    type(lambertian), target :: material_center,material_ground,material_left,material_right
+    real(real64), dimension(3), parameter :: color_center=[0.7d0,0.3d0,0.3d0],color_ground=[0.8d0,0.8d0,0.0d0],color_left=0.8d0,color_right=[0.8d0,0.6d0,0.2d0]
     
     !Camera Variables
     real(real64), parameter :: viewport_height = 2.0d0, viewport_width = aspect_ratio*viewport_height,focal_length=1.0d0
@@ -33,10 +38,22 @@
     ! Body of rtweekendfortran
     
     cam = camera()
-    call random_init(.true.,.false.)    
+    call random_init(.true.,.false.)
     
-    !call world%add(sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0))
-    !call world%add(sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0))
+    material_ground = lambertian(vec3(color_ground))
+    material_center = lambertian(vec3(color_center))
+    material_left = lambertian(vec3(color_left))
+    material_right = lambertian(vec3(color_right))
+    
+    sphere_center=sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0,material_center)
+    sphere_ground=sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0,material_ground)
+    sphere_left=sphere(vec3(-1.0d0,0.0d0,-1.0d0),0.5d0,material_left)
+    sphere_right=sphere(vec3(1.0d0,0.0d0,-1.0d0),0.5d0,material_right)
+    
+    call world%add(sphere_center)
+    call world%add(sphere_ground)
+    call world%add(sphere_left)
+    call world%add(sphere_right)
         
     world_origin = vec3(0.0d0,0.0d0,0.0d0)
     horizontal = vec3(viewport_width,0.0d0,0.0d0)
@@ -66,7 +83,7 @@
     close(filelun)
     
     contains
-        recursive function ray_color(r, world,depth)
+        recursive function ray_color(r,world,depth)
             use rtweekend, only : infinity
             type(ray), intent(IN) :: r
             type(hittable_list), intent(IN) :: world
@@ -78,14 +95,23 @@
             real(real64), parameter :: smallnum=1d-4
             type(vec3) :: unit_direction,targetvec
             
+            type(ray) :: scattered
+            type(vec3) :: attenuation
+            
             if(depth.le.0) then
                 ray_color = vec3(0.0d0,0.0d0,0.0d0)
                 return
             endif
             
             if(world%hit(r,smallnum,infinity,rec)) then
-                targetvec = rec%p + rec%normal + random_in_hemisphere(rec%normal)
-                ray_color = 0.5d0 * ray_color(ray(rec%p,targetvec - rec%p),world,depth-1)
+                if(rec%mat_ptr%scatter(r,rec,attenuation,scattered)) then
+                    ray_color = attenuation * ray_color(scattered,world,depth-1)
+                    return
+                end if
+                !targetvec = rec%p + rec%normal + random_in_hemisphere(rec%normal)
+                !ray_color = 0.5d0 * ray_color(ray(rec%p,targetvec - rec%p),world,depth-1)
+                !ray_color = vec3(0.0d0)
+                ray_color = vec3(0.0d0)
                 return
             endif
             

@@ -83,7 +83,7 @@ module hittables
         private
         type(vec3) :: c
         real(real64) :: r
-        class(material), pointer :: mat_ptr
+        class(material), pointer :: mat_ptr => NULL()
     contains
         procedure, public :: hit=>hit_sphere
     end type sphere
@@ -91,7 +91,7 @@ module hittables
     !Interfaces for porcedures in the sphere submodule
     !Constructor interface
     interface sphere
-        module procedure :: init_sphere_default,init_sphere_ptr
+        module procedure :: init_sphere_default,init_sphere_ref
     end interface sphere
     
     !Other
@@ -105,17 +105,25 @@ module hittables
             logical :: hit_sphere
         end function hit_sphere
         
-        pure module function init_sphere_default()
-            type(sphere) :: init_sphere_default
+        pure module function init_sphere_default() result(init_sphere)
+            type(sphere) :: init_sphere
         end function init_sphere_default
     
-        module function init_sphere_ptr(cen,r,mat_ptr)
+        module function init_sphere_ptr(cen,r,mat_ptr) result(init_sphere)
             import material
             type(vec3), intent(IN) :: cen
             real(real64), intent(IN) :: r
             class(material), pointer, intent(IN) :: mat_ptr
             type(sphere) :: init_sphere
         end function init_sphere_ptr
+    
+        module function init_sphere_ref(cen,r,mat) result(init_sphere)
+            import material
+            type(vec3), intent(IN) :: cen
+            real(real64), intent(IN) :: r
+            class(material), target, intent(IN) :: mat
+            type(sphere) :: init_sphere
+        end function init_sphere_ref
     
         pure module function radius(this)
             class(sphere), intent(IN) :: this

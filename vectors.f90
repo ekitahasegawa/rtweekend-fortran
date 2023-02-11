@@ -11,7 +11,7 @@ module vectors
     end type vec3
     
     interface vec3
-        module procedure vec_init_default,vec_init_r8,vec_init_vec
+        module procedure vec_init_default,vec_init_r8,vec_init_vec,vec_init_scalar
     end interface vec3
     
     interface write(formatted)
@@ -84,6 +84,11 @@ module vectors
             real(real64), intent(IN) :: t
             type(vec3) :: v2
         end function scalar_times_vector
+    
+        pure module elemental function vector_times_vector(v1,v2) result(v3)
+            type(vec3), intent(IN) :: v1,v2
+            type(vec3) :: v3
+        end function vector_times_vector
     end interface
     
     interface operator(/)
@@ -147,6 +152,12 @@ module vectors
             type(vec3) :: v
             v%e = w
         end function vec_init_vec
+        
+        pure function vec_init_scalar(w) result(v)
+            real(real64), intent(IN) :: w
+            type(vec3) :: v
+            v%e = w
+        end function vec_init_scalar
         
         pure function length(this)
             type(vec3), intent(IN) :: this
