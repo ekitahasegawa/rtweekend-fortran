@@ -244,4 +244,11 @@ module vectors
                 random_in_hemisphere = -1.0d0 * random_in_hemisphere
             endif
         end function random_in_hemisphere
+        
+        function near_zero(this)
+            class(vec3), intent(IN) :: this
+            real(real64), parameter :: smallnum = 1d-8
+            logical :: near_zero
+            near_zero = all(abs(this%e).lt.smallnum)
+        end function near_zero
 end module vectors
