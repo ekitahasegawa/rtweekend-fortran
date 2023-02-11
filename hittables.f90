@@ -81,6 +81,7 @@ module hittables
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     type, extends(material) :: metal
         type(vec3), public :: albedo
+        real(real64), public :: fuzz=0.0d0
     contains
         procedure, public :: scatter=>metal_scatter
     end type metal
@@ -104,8 +105,9 @@ module hittables
             type(metal) :: init_metal
         end function init_metal_default
         
-        module function init_metal(c)
+        module function init_metal(c,fuzz)
             type(vec3), intent(IN) :: c
+            real(real64), optional, intent(IN) :: fuzz
             type(metal) init_metal
         end function init_metal
     end interface

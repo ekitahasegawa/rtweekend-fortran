@@ -43,8 +43,8 @@
     
     material_ground = lambertian(vec3(color_ground))
     material_center = lambertian(vec3(color_center))
-    material_left = metal(vec3(color_left))
-    material_right = metal(vec3(color_right))
+    material_left = metal(vec3(color_left),fuzz=0.3d0)
+    material_right = metal(vec3(color_right),fuzz=1.0d0)
     
     sphere_center=sphere(vec3(0.0d0,0.0d0,-1.0d0),0.5d0,material_center)
     sphere_ground=sphere(vec3(0.0d0,-100.5d0,-1.0d0),100.0d0,material_ground)
