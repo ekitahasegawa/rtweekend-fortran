@@ -89,7 +89,6 @@ module hittables
         procedure, public :: list_size
     end type hittable_list
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
-    
     interface
         module function hit_objects(this,r,t_min,t_max,rec)
             import hittable_list
@@ -111,7 +110,6 @@ module hittables
         end function list_size
 
     end interface
-    
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     contains
     

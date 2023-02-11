@@ -4,13 +4,7 @@ submodule (hittables) spheres
     
     contains
     
-    module function hit_sphere(this,r,t_min,t_max,rec)
-        class(sphere), intent(IN) :: this
-        type(ray), intent(IN) :: r
-        real(kind=real64), intent(IN) :: t_min,t_max
-        type(hit_record), intent(INOUT) :: rec
-        logical :: hit_sphere
-            
+    module procedure hit_sphere       
         type(vec3) :: oc,outward_normal
         real(kind=real64) :: a,half_b,c,discriminant,root,sqrtd
             
@@ -42,31 +36,24 @@ submodule (hittables) spheres
         outward_normal = (rec%p - this%c) / this%r
         call rec%set_face_normal(r,outward_normal)
         hit_sphere = .true.
-    end function hit_sphere
+    end procedure hit_sphere
     
-    pure module function init_sphere_default()
-        type(sphere) :: init_sphere_default
+    module procedure init_sphere_default
         init_sphere_default%r = 0.0d0
         init_sphere_default%c = vec3(0.0d0,0.0d0,0.0d0)
-    end function init_sphere_default
+    end procedure init_sphere_default
     
-    pure module function init_sphere(cen,r)
-        type(vec3), intent(IN) :: cen
-        real(kind=real64), intent(IN) :: r
+    module procedure init_sphere
         type(sphere) :: init_sphere
         init_sphere%c = cen
         init_sphere%r = r
-    end function init_sphere
+    end procedure init_sphere
     
-    pure module function radius(this)
-        class(sphere), intent(IN) :: this
-        real(kind=real64) :: radius
+    module procedure radius
         radius = this%r
-    end function radius
+    end procedure radius
     
-    pure module function center(this)
-        class(sphere), intent(IN) :: this
-        type(vec3) :: center
+    module procedure center
         center = this%c
-    end function center
+    end procedure center
 end submodule spheres
