@@ -108,7 +108,25 @@ module hittables
             class(hittable_list), intent(IN) :: this
             integer :: list_size
         end function list_size
-
+    end interface
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    type, abstract :: material
+    contains
+        procedure (scatter_ray), public, deferred :: scatter
+    end type material
+!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+    abstract interface
+        logical function scatter_ray(this,r_in,rec,attenuation,scattered)
+            use rays, only : ray
+            use vectors, only : vec3
+            import material
+            import hit_record
+            class(material), intent(IN) :: this
+            type(ray), intent(IN) :: r_in
+            type(hit_record), intent(IN) :: rec
+            type(vec3), intent(IN) :: attenuation
+            type(ray), intent(OUT) :: scattered
+        end function scatter_ray
     end interface
 !------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     contains
