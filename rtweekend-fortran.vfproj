@@ -51,6 +51,7 @@
 		<File RelativePath=".\cameras.f90"/>
 		<File RelativePath=".\hittablelist.f90"/>
 		<File RelativePath=".\hittables.f90"/>
+		<File RelativePath=".\lambertian.f90"/>
 		<File RelativePath=".\rays.f90"/>
 		<File RelativePath=".\rtweekend-fortran.f90"/>
 		<File RelativePath=".\rtweekend.f90"/>

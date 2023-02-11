@@ -7,7 +7,7 @@ module vectors
         real(real64), dimension(3) :: e
     contains
         private
-        procedure, public :: x,y,z,val,length_squared
+        procedure, public :: x,y,z,val,length_squared,near_zero
     end type vec3
     
     interface vec3
@@ -133,7 +133,7 @@ module vectors
         
         pure function vec_init_default() result(v)
             type(vec3) :: v
-            v%e = [0d0,0d0,0d0]
+            v%e = [1d0,0d0,0d0]
         end function vec_init_default
         
         pure function vec_init_r8(e1,e2,e3) result(v)
