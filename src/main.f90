@@ -1,15 +1,33 @@
 program main
-   use rtweekend, only : rk, convert_to_unsigned, newln
+   use rtweekend, only : rk, convert_to_unsigned, &
+      write_ppm_ascii, write_ppm_binary
    use iso_fortran_env, only : int8,int32,int64,real32,real64
    implicit none
 
-   integer, parameter :: image_width = 256, image_height=256, max_pixel_val = 255
+   integer, parameter :: default_image_width = 256, default_image_height = 256, max_pixel_val = 255
+   real(rk), parameter :: default_aspect_ratio = 16.0_rk/9.0_rk
    character(len=*), parameter :: filename="image.ppm"
-   integer :: ii, jj
-   integer(int32), dimension(:,:,:), allocatable :: pixel_field
 
-   integer :: ir,ig,ib
+   integer :: ii, jj, image_width, image_height, ir, ig, ib, arg_count
+   integer(int32), dimension(:,:,:), allocatable :: pixel_field
    real(rk) :: r,g,b
+   character(len=256) :: arg
+
+   arg_count = command_argument_count()
+
+   if(arg_count.eq.0) then
+      image_width = default_image_width
+      image_height = default_image_height
+   else
+      call get_command_argument(1,arg)
+      read(arg,*) image_width
+      if(arg_count.gt.1) then
+         call get_command_argument(2,arg)
+         read(arg,*) image_height
+      else
+         image_height = nint(image_width / default_aspect_ratio)
+      end if
+   end if
 
    allocate(pixel_field(3,image_width,image_height))
 
@@ -29,63 +47,4 @@ program main
 
    call write_ppm_ascii("ascii_image.ppm",pixel_field)
    call write_ppm_binary("binary_image.ppm",pixel_field)
-
-   contains
-
-   subroutine write_ppm_ascii(filename,data,pixel_max)
-      character(len=*), intent(IN) :: filename
-      integer, dimension(:,:,:), intent(IN) :: data
-      integer, intent(IN), optional :: pixel_max
-
-      integer :: lun, image_height, image_width, pmax, ii, jj
-
-      pmax = 255
-      if(present(pixel_max)) pmax = pixel_max
-
-      open(newunit=lun,file=filename,status="replace",action="write")
-
-      image_width = size(data,2)
-      image_height = size(data,3)
-
-      write(lun,"(A)") "P3"
-      write(lun,"(I0,X,I0)") image_width, image_height
-      write(lun,"(I0)") pmax
-
-      do jj=1,image_height
-         do ii=1,image_width
-            write(lun,"(I0,X,I0,X,I0)") data(:,ii,jj)
-         end do
-      end do
-
-      close(lun)
-   end subroutine write_ppm_ascii
-
-   subroutine write_ppm_binary(filename,data,pixel_max)
-      character(len=*), intent(IN) :: filename
-      integer(int32), dimension(:,:,:), intent(IN) :: data
-      integer, intent(IN), optional :: pixel_max
-
-      integer :: lun, image_height, image_width, pmax
-      integer(int8), dimension(:,:,:), allocatable :: binary_data
-
-      pmax = 255
-      if(present(pixel_max)) pmax = pixel_max
-
-      image_width = size(data,2)
-      image_height = size(data,3)
-
-      open(newunit=lun,file=filename,status="replace",action="write",&
-      form="formatted")
-
-      write(lun,"(A)") "P6"
-      write(lun,"(I0,X,I0)") image_width, image_height
-      write(lun,"(I0)") pmax
-      close(lun)
-
-      open(newunit=lun,file=filename,status="old",action="write",&
-      form="unformatted",position="append")
-
-      write(lun) convert_to_unsigned(data)
-      close(lun)
-   end subroutine write_ppm_binary
 end program main
