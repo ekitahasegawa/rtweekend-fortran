@@ -1,7 +1,6 @@
 program main
+   use rtweekend, only : rk
    implicit none
-
-   integer, parameter :: rk = selected_real_kind(15)
 
    integer, parameter :: image_width = 256, image_height=256
    character(len=*), parameter :: filename="image.ppm"
@@ -10,13 +9,13 @@ program main
    integer :: ir,ig,ib
    real :: r,g,b
    
-   open(newunit=lun,file=filename)
+   open(newunit=lun,file=filename,status="replace",action="write")
    write(lun,"(A)") "P3"
    write(lun,"(I0,X,I0)") image_width, image_height
    write(lun,"(A)") "255"
 
-   do ii=1,image_height
-      do jj=1,image_width
+   do jj=1,image_height
+      do ii=1,image_width
          r = real(ii,kind=kind(r))/(image_width-1)
          g = real(jj,kind=kind(g))/(image_height-1)
          b = 0.25_rk
@@ -28,7 +27,6 @@ program main
          write(lun,"(I0,X,I0,X,I0)") ir, ig, ib
       end do
    end do
-
 
    close(lun)
 end program main
