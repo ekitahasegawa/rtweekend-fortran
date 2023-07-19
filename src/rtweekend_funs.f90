@@ -1,16 +1,9 @@
-module rtweekend
-   use iso_fortran_env, only : int8,int32,int64
+submodule(rtweekend) rtweekend_funs
    implicit none
-   integer, parameter :: rk = selected_real_kind(15)
-   character, parameter :: newln = new_line("A")
-
-   interface write_ppm_binary
-      module procedure write_ppm_binary_array, write_ppm_binary_vec
-   end interface write_ppm_binary
 
    contains
 
-   subroutine write_ppm_ascii(filename,data,pixel_max)
+   module subroutine write_ppm_ascii_array(filename,data,pixel_max)
       character(len=*), intent(IN) :: filename
       integer, dimension(:,:,:), intent(IN) :: data
       integer, intent(IN), optional :: pixel_max
@@ -36,9 +29,9 @@ module rtweekend
       end do
 
       close(lun)
-   end subroutine write_ppm_ascii
+   end subroutine write_ppm_ascii_array
 
-   subroutine write_ppm_binary_array(filename,data,pixel_max)
+   module subroutine write_ppm_binary_array(filename,data,pixel_max)
       character(len=*), intent(IN) :: filename
       integer(int32), dimension(:,:,:), intent(IN) :: data
       integer, intent(IN), optional :: pixel_max
@@ -72,7 +65,7 @@ module rtweekend
       close(lun)
    end subroutine write_ppm_binary_array
 
-   subroutine write_ppm_binary_vec(filename,data,pixel_max)
+   module subroutine write_ppm_binary_vec(filename,data,pixel_max)
       use vec3_mod, only : vec3
       character(len=*), intent(IN) :: filename
       type(vec3), dimension(:,:), intent(IN) :: data
@@ -107,8 +100,8 @@ module rtweekend
 
       close(lun)
    end subroutine write_ppm_binary_vec
-   
-   elemental function convert_to_unsigned(n) result(n_u)
+
+   module elemental function convert_to_unsigned(n) result(n_u)
       integer, value :: n
       integer(int8) :: n_u
       integer :: n_set_upper_bits
@@ -127,4 +120,4 @@ module rtweekend
 
       n_u = iand(n,z'FF')
    end function convert_to_unsigned
-end module rtweekend
+end submodule rtweekend_funs

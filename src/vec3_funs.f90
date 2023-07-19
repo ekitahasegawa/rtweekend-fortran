@@ -1,4 +1,4 @@
-submodule(vec3_mod) vec3_ops
+submodule(vec3_mod) vec3_funs
    implicit none
 
    contains
@@ -60,4 +60,4 @@ submodule(vec3_mod) vec3_ops
 
       vec_div_real = vec3(u%e * t)
    end function vec_div_real
-end submodule vec3_ops
+end submodule vec3_funs
