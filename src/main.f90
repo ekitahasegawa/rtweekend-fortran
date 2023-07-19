@@ -1,8 +1,8 @@
 program main
-   use rtweekend, only : rk, convert_to_unsigned, &
-      write_ppm_ascii, write_ppm_binary, write_ppm_binary_vec
+   use rtweekend_mod, only : rk, convert_to_unsigned
    use iso_fortran_env, only : int8,int32,int64,real32,real64
    use vec3_mod, only : vec3
+   use color_mod, only : write_ppm_binary, write_ppm_ascii
    implicit none
 
    integer, parameter :: default_image_width = 256, default_image_height = 256, max_pixel_val = 255
