@@ -62,7 +62,6 @@ submodule(color_mod) color_funs
       allocate(ints(3,image_width,image_height))
       ints = convert_to_unsigned(data)
 
-      !write(lun) convert_to_unsigned(data)
       write(lun) ints
       close(lun)
    end subroutine write_ppm_binary_array
@@ -72,7 +71,8 @@ submodule(color_mod) color_funs
       character(len=*), intent(IN) :: filename
       type(vec3), dimension(:,:), intent(IN) :: data
       integer, intent(IN), optional :: pixel_max
-      type(vec3) :: v
+
+      integer(int8), dimension(:,:,:), allocatable :: ints
 
       integer :: lun, image_height, image_width, pmax,ii,jj
 
@@ -81,6 +81,8 @@ submodule(color_mod) color_funs
 
       image_width = size(data,1)
       image_height = size(data,2)
+
+      allocate(ints(3,image_width,image_height))
 
       open(newunit=lun,file=filename,status="replace",action="write",&
       form="formatted")
@@ -93,13 +95,11 @@ submodule(color_mod) color_funs
       open(newunit=lun,file=filename,status="old",action="write",&
       form="unformatted",position="append")
 
-      do jj=1,image_height
-         do ii=1,image_width
-            v = data(ii,jj)
-            write(lun) convert_to_unsigned(int(v%e))
-         end do
+      do concurrent(ii=1:image_width, jj=1:image_height)
+         ints(:,ii,jj) = convert_to_unsigned(int(data(ii,jj)%e))
       end do
 
+      write(lun) ints
       close(lun)
    end subroutine write_ppm_binary_vec
 end submodule color_funs
