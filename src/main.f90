@@ -1,8 +1,9 @@
 program main
    use rtweekend_mod, only : rk, convert_to_unsigned
    use iso_fortran_env, only : int8,int32,int64,real32,real64
-   use vec3_mod, only : vec3
+   use vec3_mod
    use color_mod, only : write_ppm_binary, write_ppm_ascii
+   use ray_mod, only : ray
    implicit none
 
    integer, parameter :: default_image_width = 256, default_image_height = 256, max_pixel_val = 255
@@ -15,7 +16,15 @@ program main
    real(rk) :: r,g,b
    character(len=256) :: arg
 
-   real(real64) :: start_time, stop_time
+   real(rk) :: start_time, stop_time
+
+   !Camera variables
+   real(rk) :: viewport_height, viewport_width, focal_length
+   type(vec3) :: origin, horizontal, vertical, lower_left_corner
+   real(rk) :: s,t
+
+   type(ray) :: camera_ray
+   type(vec3) :: pixel_color
 
    arg_count = command_argument_count()
 
@@ -33,6 +42,16 @@ program main
       end if
    end if
 
+   !Setting default viewport parameters
+   viewport_height = 2.0_rk
+   viewport_width = default_aspect_ratio * viewport_height
+   focal_length = 1.0_rk
+   origin = vec3([0.0_rk, 0.0_rk, 0.0_rk])
+   horizontal = vec3([viewport_width, 0.0_rk, 0.0_rk])
+   vertical = vec3([0.0_rk, viewport_height, 0.0_rk])
+   lower_left_corner = origin - (horizontal/2.0_rk) - (vertical/2.0_rk) - vec3([0.0_rk, 0.0_rk, focal_length])
+
+
    print"(A,I0,A,I0)", "Resolution: ", image_width, "x", image_height
 
    allocate(pixel_field(3,image_width,image_height))
@@ -42,17 +61,16 @@ program main
 
    do jj=1,image_height
       do ii=1,image_width
-         r = real((ii-1),kind=rk)/(image_width)
-         g = real((jj-1),kind=rk)/(image_height)
-         b = 0.25_rk
+         s = real(ii-1,kind=rk) / (image_width - 1)
+         t = real(jj-1,kind=rk) / (image_height - 1)
 
-         vectors(ii,jj) = vec3(256.0_rk*[r,g,b])
+         camera_ray = ray(origin, &
+            lower_left_corner + (s*horizontal) + (1.0_rk-t)*vertical - origin)
 
-         ir = int(256.0_rk * r)
-         ig = int(256.0_rk * g)
-         ib = int(256.0_rk * b)
+         ! pixel_color = ray_color(camera_ray)
+         pixel_color = ray_color_default(s,t)
 
-         pixel_field(:,ii,jj) = [ir,ig,ib]
+         vectors(ii,jj) = 255.999_rk * pixel_color
       end do
    end do
 
@@ -61,6 +79,32 @@ program main
    print*, "Iterations Done. Total Time: ", stop_time - start_time
 
    ! call write_ppm_ascii("ascii_image.ppm",pixel_field)
-   call write_ppm_binary("binary_image.ppm",pixel_field)
-   ! call write_ppm_binary("binary_image.ppm",vectors)
+   ! call write_ppm_binary("binary_image.ppm",pixel_field)
+   call write_ppm_binary("binary_image.ppm",vectors)
+   call write_ppm_ascii("ascii_image.ppm",vectors)
+
+   contains
+
+   pure function ray_color(r_in)
+      use ray_mod, only : ray
+      type(ray), intent(IN) :: r_in
+      type(vec3) :: ray_color
+
+      type(vec3) :: unit_direction
+      real(rk) :: a
+
+      unit_direction = .unit.(r_in%direction)
+      a = 0.5_rk*(unit_direction%e(2) + 1.0_rk)
+
+      ray_color = (1.0_rk - a)*vec3([1.0_rk, 1.0_rk, 1.0_rk]) + &
+         a*vec3([0.5_rk, 0.7_rk, 1.0_rk])
+   end function ray_color
+
+   pure function ray_color_default(s_in,t_in)
+      real(rk), intent(IN) :: s_in,t_in
+      type(vec3) :: ray_color_default
+
+      ray_color_default = vec3([s_in,t_in,0.25_rk])
+
+   end function ray_color_default
 end program main
