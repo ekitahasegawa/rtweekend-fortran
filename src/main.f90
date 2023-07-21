@@ -10,10 +10,9 @@ program main
    real(rk), parameter :: default_aspect_ratio = 16.0_rk/9.0_rk
    character(len=*), parameter :: filename="image.ppm"
 
-   integer :: ii, jj, image_width, image_height, ir, ig, ib, arg_count
+   integer :: ii, jj, image_width, image_height, arg_count
    integer(int32), dimension(:,:,:), allocatable :: pixel_field
    type(vec3), dimension(:,:), allocatable :: vectors
-   real(rk) :: r,g,b
    character(len=256) :: arg
 
    real(rk) :: start_time, stop_time
@@ -89,29 +88,37 @@ program main
       type(vec3), intent(IN) :: center
       real(rk), intent(IN) :: radius
       type(ray), intent(IN) :: ray_in
-      logical :: hit_sphere
+      real(rk) :: hit_sphere
 
       type(vec3) :: oc
-      real(rk) :: a,b,c,discriminant
+      real(rk) :: a,half_b,c,discriminant
 
       oc = ray_in%origin - center
-      a = ray_in%direction.dot.ray_in%direction
-      b = 2.0_rk * oc.dot.ray_in%direction
-      c = (oc.dot.oc) - (radius**2.0_rk)
-      discriminant = (b**2.0_rk) - (4.0_rk*a*c)
-      hit_sphere = (discriminant.gt.0)
+      a = (ray_in%direction.dot.ray_in%direction)
+      half_b = (oc.dot.ray_in%direction)
+      c = (oc.dot.oc) - (radius**2)
+      discriminant = (half_b**2) - (a*c)
+
+      if(discriminant.lt.0_rk) then
+         hit_sphere = -1.0_rk
+      else
+         hit_sphere = (-half_b - sqrt(discriminant)) / (a)
+      end if
    end function hit_sphere
 
    pure function ray_color(r_in)
-      use ray_mod, only : ray
+      use ray_mod
       type(ray), intent(IN) :: r_in
       type(vec3) :: ray_color
 
-      type(vec3) :: unit_direction
-      real(rk) :: a
+      type(vec3) :: unit_direction, n
+      real(rk) :: a, intersect_point
 
-      if(hit_sphere(vec3([0.0_rk, 0.0_rk, -1.0_rk]),0.5_rk,r_in)) then
-         ray_color = vec3([1.0_rk, 0.0_rk, 0.0_rk])
+      intersect_point = hit_sphere(vec3([0.0_rk, 0.0_rk, -1.0_rk]),0.5_rk,r_in)
+
+      if(intersect_point.gt.0_rk) then
+         N = .unit.((r_in.at.intersect_point) - vec3([0.0_rk, 0.0_rk, -1.0_rk]))
+         ray_color = 0.5_rk*vec3(N%e + 1.0_rk)
          return
       end if
 
