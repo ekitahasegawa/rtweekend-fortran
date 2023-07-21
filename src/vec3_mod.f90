@@ -1,11 +1,9 @@
 module vec3_mod
-   !use rtweekend, only : rk
-   use iso_fortran_env, only : real32, real64
+   use rtweekend_mod, only : rk
    implicit none
-   integer, parameter :: rk=real32
 
    type vec3
-      real(real64), dimension(3) :: e
+      real(rk), dimension(3) :: e
    end type vec3
 
    interface operator(+)
@@ -16,9 +14,15 @@ module vec3_mod
 
       pure module function vec_plus_real(u,t)
          type(vec3), intent(IN) :: u
-         real, value, intent(IN) :: t
+         real(rk), value, intent(IN) :: t
          type(vec3) :: vec_plus_real
       end function vec_plus_real
+
+      pure module function real_plus_vec(t,u)
+         type(vec3), intent(IN) :: u
+         real(rk), value, intent(IN) :: t
+         type(vec3) :: real_plus_vec
+      end function real_plus_vec
    end interface
 
    interface operator(*)
@@ -29,15 +33,21 @@ module vec3_mod
 
       pure module function vec_times_real(u,t)
          type(vec3), intent(IN) :: u
-         real, value, intent(IN) :: t
+         real(rk), value, intent(IN) :: t
          type(vec3) :: vec_times_real
       end function vec_times_real
+
+      pure module function real_times_vec(t,u)
+         type(vec3), intent(IN) :: u
+         real(rk), value, intent(IN) :: t
+         type(vec3) :: real_times_vec
+      end function real_times_vec
    end interface
 
    interface operator(/)
       pure module function vec_div_real(u,t)
          type(vec3), intent(IN) :: u
-         real, value, intent(IN) :: t
+         real(rk), value, intent(IN) :: t
          type(vec3) :: vec_div_real
       end function vec_div_real
    end interface

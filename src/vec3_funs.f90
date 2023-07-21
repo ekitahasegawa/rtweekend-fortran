@@ -1,4 +1,5 @@
 submodule(vec3_mod) vec3_funs
+   use rtweekend_mod, only : rk
    implicit none
 
    contains
@@ -32,11 +33,19 @@ submodule(vec3_mod) vec3_funs
 
    pure module function vec_plus_real(u,t)
       type(vec3), intent(IN) :: u
-      real, value, intent(IN) :: t
+      real(rk), value, intent(IN) :: t
       type(vec3) :: vec_plus_real
 
       vec_plus_real = vec3(u%e + t)
    end function vec_plus_real
+
+   pure module function real_plus_vec(t,u)
+      type(vec3), intent(IN) :: u
+      real(rk), value, intent(IN) :: t
+      type(vec3) :: real_plus_vec
+
+      real_plus_vec = u+t
+   end function real_plus_vec
 
    pure module function vec_times_vec(u,v)
       type(vec3), intent(IN) :: u,v
@@ -47,15 +56,23 @@ submodule(vec3_mod) vec3_funs
 
    pure module function vec_times_real(u,t)
       type(vec3), intent(IN) :: u
-      real, value, intent(IN) :: t
+      real(rk), value, intent(IN) :: t
       type(vec3) :: vec_times_real
 
       vec_times_real = vec3(u%e * t)
    end function vec_times_real
 
+   pure module function real_times_vec(t,u)
+      type(vec3), intent(IN) :: u
+      real(rk), value, intent(IN) :: t
+      type(vec3) :: real_times_vec
+
+      real_times_vec = u*t
+   end function real_times_vec
+
    pure module function vec_div_real(u,t)
       type(vec3), intent(IN) :: u
-      real, value, intent(IN) :: t
+      real(rk), value, intent(IN) :: t
       type(vec3) :: vec_div_real
 
       vec_div_real = vec3(u%e * t)
