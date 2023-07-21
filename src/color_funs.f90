@@ -85,7 +85,7 @@ submodule(color_mod) color_funs
       close(lun)
 
       open(newunit=lun,file=filename,status="old",action="write",&
-      form="unformatted",position="append")
+      form="unformatted",access="stream",position="append")
 
       allocate(ints(3,image_width,image_height))
       ints = convert_to_unsigned(data)
@@ -125,7 +125,7 @@ submodule(color_mod) color_funs
       close(lun)
 
       open(newunit=lun,file=filename,status="old",action="write",&
-      form="unformatted",position="append")
+      form="unformatted",access="stream",position="append")
 
       write(lun) ints
       close(lun)

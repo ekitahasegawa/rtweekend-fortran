@@ -81,7 +81,7 @@ program main
    ! call write_ppm_ascii("ascii_image.ppm",pixel_field)
    ! call write_ppm_binary("binary_image.ppm",pixel_field)
    call write_ppm_binary("binary_image.ppm",vectors)
-   call write_ppm_ascii("ascii_image.ppm",vectors)
+   !call write_ppm_ascii("ascii_image.ppm",vectors)
 
    contains
 
