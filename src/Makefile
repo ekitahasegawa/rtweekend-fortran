@@ -8,7 +8,7 @@ SOURCES=main.f90 color_mod.f90 ray_mod.f90 rtweekend_mod.f90 vec3_mod.f90 color_
 
 FCFLAGS += -O2
 
-main: $(subst .f90,.o,$(SOURCES))
+main.out: $(subst .f90,.o,$(SOURCES))
 	$(FC) $(FCFLAGS) -o $@ $+
 
 .PHONY: clean
