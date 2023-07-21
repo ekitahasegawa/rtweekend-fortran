@@ -6,14 +6,18 @@ MAKEMOD.f08 = $(FC) $(FCFLAGS) $(TARGET_ARCH) -fsyntax-only -c
 
 SOURCES=main.f90 color_mod.f90 ray_mod.f90 rtweekend_mod.f90 vec3_mod.f90 color_funs.f90 ray_funs.f90 rtweekend_funs.f90 vec3_funs.f90
 
-FCFLAGS += -O2
+ifeq ($(DEBUG),)
+	FCFLAGS += -O2
+else
+	FCFLAGS += -O0 -g
+endif
 
 main.out: $(subst .f90,.o,$(SOURCES))
 	$(FC) $(FCFLAGS) -o $@ $+
 
 .PHONY: clean
 clean:
-	-rm -f *.o *.mod *.smod *.anc main 
+	-rm -f *.o *.mod *.smod *.anc main.out
 
 %.anc: %.f90
 	$(MAKEMOD.f08) $<
@@ -23,7 +27,7 @@ clean:
 	$(COMPILE.f08) -o $*.o $(<:.anc=.f90)
 	@touch $@
 
-main.anc: rtweekend_mod.anc vec3_mod.anc color_mod.anc
+main.anc: rtweekend_mod.anc vec3_mod.anc color_mod.anc ray_mod.anc
 
 rtweekend_mod.anc: rtweekend_mod.mod rtweekend_mod.smod
 vec3_mod.anc: vec3_mod.mod vec3_mod.smod
