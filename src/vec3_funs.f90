@@ -47,6 +47,29 @@ submodule(vec3_mod) vec3_funs
       real_plus_vec = u+t
    end function real_plus_vec
 
+   pure module function vec_minus_vec(u,v)
+      type(vec3), intent(IN) :: u,v
+      type(vec3) :: vec_minus_vec
+
+      vec_minus_vec = vec3(u%e - v%e)
+   end function vec_minus_vec
+
+   pure module function vec_minus_real(u,t)
+      type(vec3), intent(IN) :: u
+      real(rk), value, intent(IN) :: t
+      type(vec3) :: vec_minus_real
+
+      vec_minus_real = vec3(u%e - t)
+   end function vec_minus_real
+
+   pure module function real_minus_vec(t,u)
+      type(vec3), intent(IN) :: u
+      real(rk), value, intent(IN) :: t
+      type(vec3) :: real_minus_vec
+
+      real_minus_vec = u-t
+   end function real_minus_vec
+
    pure module function vec_times_vec(u,v)
       type(vec3), intent(IN) :: u,v
       type(vec3) :: vec_times_vec
@@ -75,6 +98,15 @@ submodule(vec3_mod) vec3_funs
       real(rk), value, intent(IN) :: t
       type(vec3) :: vec_div_real
 
-      vec_div_real = vec3(u%e * t)
+      vec_div_real = vec3(u%e / t)
    end function vec_div_real
+
+   pure elemental module function reverse_vector(v_in)
+      type(vec3), intent(IN) :: v_in
+      type(vec3) :: reverse_vector
+
+      associate(v => v_in%e)
+         reverse_vector = vec3(v(3:1:-1))
+      end associate
+   end function reverse_vector
 end submodule vec3_funs

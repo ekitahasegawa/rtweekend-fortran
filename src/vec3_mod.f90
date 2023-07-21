@@ -25,6 +25,25 @@ module vec3_mod
       end function real_plus_vec
    end interface
 
+   interface operator(-)
+      pure module function vec_minus_vec(u,v)
+         type(vec3), intent(IN) :: u,v
+         type(vec3) :: vec_minus_vec
+      end function vec_minus_vec
+
+      pure module function vec_minus_real(u,t)
+         type(vec3), intent(IN) :: u
+         real(rk), value, intent(IN) :: t
+         type(vec3) :: vec_minus_real
+      end function vec_minus_real
+
+      pure module function real_minus_vec(t,u)
+         type(vec3), intent(IN) :: u
+         real(rk), value, intent(IN) :: t
+         type(vec3) :: real_minus_vec
+      end function real_minus_vec
+   end interface
+
    interface operator(*)
       pure module function vec_times_vec(u,v)
          type(vec3), intent(IN) :: u,v
@@ -64,6 +83,13 @@ module vec3_mod
          type(vec3), intent(IN) :: v
          type(vec3) :: unit_vector
       end function unit_vector
+   end interface
+
+   interface operator(.reverse.)
+      pure elemental module function reverse_vector(v_in)
+         type(vec3), intent(IN) :: v_in
+         type(vec3) :: reverse_vector
+      end function reverse_vector
    end interface
 
 end module vec3_mod
