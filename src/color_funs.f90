@@ -33,6 +33,34 @@ submodule(color_mod) color_funs
       close(lun)
    end subroutine write_ppm_ascii_array
 
+   module subroutine write_ppm_ascii_vec(filename,data,pixel_max)
+      character(len=*), intent(IN) :: filename
+      type(vec3), dimension(:,:), intent(IN) :: data
+      integer, intent(IN), optional :: pixel_max
+
+      integer :: lun, image_height, image_width, pmax,ii,jj
+
+      pmax = 255
+      if(present(pixel_max)) pmax = pixel_max
+
+      image_width = size(data,1)
+      image_height = size(data,2)
+
+      open(newunit=lun,file=filename,status="replace",action="write")
+
+      write(lun,"(A)") "P3"
+      write(lun,"(I0,X,I0)") image_width, image_height
+      write(lun,"(I0)") pmax
+
+      do jj=1,image_height
+         do ii=1,image_width
+            write(lun,"(I0,X,I0,X,I0)") int(data(ii,jj)%e)
+         end do
+      end do
+
+      close(lun)
+   end subroutine write_ppm_ascii_vec
+
    module subroutine write_ppm_binary_array(filename,data,pixel_max)
       character(len=*), intent(IN) :: filename
       integer(int32), dimension(:,:,:), intent(IN) :: data
@@ -84,6 +112,10 @@ submodule(color_mod) color_funs
 
       allocate(ints(3,image_width,image_height))
 
+      do concurrent(ii=1:image_width, jj=1:image_height)
+         ints(:,ii,jj) = convert_to_unsigned(int(data(ii,jj)%e))
+      end do
+
       open(newunit=lun,file=filename,status="replace",action="write",&
       form="formatted")
 
@@ -94,10 +126,6 @@ submodule(color_mod) color_funs
 
       open(newunit=lun,file=filename,status="old",action="write",&
       form="unformatted",position="append")
-
-      do concurrent(ii=1:image_width, jj=1:image_height)
-         ints(:,ii,jj) = convert_to_unsigned(int(data(ii,jj)%e))
-      end do
 
       write(lun) ints
       close(lun)

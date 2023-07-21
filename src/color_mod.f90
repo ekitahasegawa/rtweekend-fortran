@@ -27,6 +27,12 @@ module color_mod
          integer, dimension(:,:,:), intent(IN) :: data
          integer, intent(IN), optional :: pixel_max
       end subroutine write_ppm_ascii_array
+
+      module subroutine write_ppm_ascii_vec(filename,data,pixel_max)
+         character(len=*), intent(IN) :: filename
+         type(vec3), dimension(:,:), intent(IN) :: data
+         integer, intent(IN), optional :: pixel_max
+      end subroutine write_ppm_ascii_vec
    end interface write_ppm_ascii
 
 end module color_mod
