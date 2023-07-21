@@ -17,7 +17,7 @@ main.out: $(subst .f90,.o,$(SOURCES))
 
 .PHONY: clean
 clean:
-	-rm -f *.o *.mod *.smod *.anc main.out
+	-rm -f *.o *.mod *.smod *.anc *.ppm main.out
 
 %.anc: %.f90
 	$(MAKEMOD.f08) $<

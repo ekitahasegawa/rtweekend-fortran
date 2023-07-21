@@ -11,18 +11,25 @@ submodule(vec3_mod) vec3_funs
       unit_vector = vec3(v%e / norm2(v%e))
    end function unit_vector
 
-   pure module function cross_product(z,w)
+   pure module function vec_dot_vec(u,v)
+      type(vec3), intent(IN) :: u,v
+      real(rk) :: vec_dot_vec
+
+      vec_dot_vec = dot_product(u%e,v%e)
+   end function vec_dot_vec
+
+   pure module function vec_cross_vec(z,w)
       type(vec3), intent(IN) :: z,w
-      type(vec3) :: cross_product
+      type(vec3) :: vec_cross_vec
 
       associate(u=>z%e, v=>w%e)
-         cross_product = vec3([ &
+         vec_cross_vec = vec3([ &
             u(2)*v(3) - u(3)*v(2),  &
             u(3)*v(1) - u(1)*v(3),  &
             u(1)*v(2) - u(2)*v(1)   &
          ])
       end associate
-   end function cross_product
+   end function vec_cross_vec
 
    pure module function vec_plus_vec(u,v)
       type(vec3), intent(IN) :: u,v

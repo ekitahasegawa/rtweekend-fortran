@@ -71,11 +71,18 @@ module vec3_mod
       end function vec_div_real
    end interface
 
+   interface operator(.dot.)
+      pure module function vec_dot_vec(u,v)
+         type(vec3), intent(IN) :: u,v
+         real(rk) :: vec_dot_vec
+      end function vec_dot_vec
+   end interface
+
    interface operator(.cross.)
-      pure module function cross_product(z,w)
+      pure module function vec_cross_vec(z,w)
          type(vec3), intent(IN) :: z,w
-         type(vec3) :: cross_product
-      end function cross_product
+         type(vec3) :: vec_cross_vec
+      end function vec_cross_vec
    end interface
 
    interface operator(.unit.)

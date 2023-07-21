@@ -67,8 +67,8 @@ program main
          camera_ray = ray(origin, &
             lower_left_corner + (s*horizontal) + (1.0_rk-t)*vertical - origin)
 
-         ! pixel_color = ray_color(camera_ray)
-         pixel_color = ray_color_default(s,t)
+         pixel_color = ray_color(camera_ray)
+         ! pixel_color = ray_color_default(s,t)
 
          vectors(ii,jj) = 255.999_rk * pixel_color
       end do
@@ -85,6 +85,23 @@ program main
 
    contains
 
+   pure function hit_sphere(center, radius, ray_in)
+      type(vec3), intent(IN) :: center
+      real(rk), intent(IN) :: radius
+      type(ray), intent(IN) :: ray_in
+      logical :: hit_sphere
+
+      type(vec3) :: oc
+      real(rk) :: a,b,c,discriminant
+
+      oc = ray_in%origin - center
+      a = ray_in%direction.dot.ray_in%direction
+      b = 2.0_rk * oc.dot.ray_in%direction
+      c = (oc.dot.oc) - (radius**2.0_rk)
+      discriminant = (b**2.0_rk) - (4.0_rk*a*c)
+      hit_sphere = (discriminant.gt.0)
+   end function hit_sphere
+
    pure function ray_color(r_in)
       use ray_mod, only : ray
       type(ray), intent(IN) :: r_in
@@ -92,6 +109,11 @@ program main
 
       type(vec3) :: unit_direction
       real(rk) :: a
+
+      if(hit_sphere(vec3([0.0_rk, 0.0_rk, -1.0_rk]),0.5_rk,r_in)) then
+         ray_color = vec3([1.0_rk, 0.0_rk, 0.0_rk])
+         return
+      end if
 
       unit_direction = .unit.(r_in%direction)
       a = 0.5_rk*(unit_direction%e(2) + 1.0_rk)
