@@ -77,6 +77,13 @@ submodule(vec3_mod) vec3_funs
       real_minus_vec = u-t
    end function real_minus_vec
 
+   pure module function negate_vec(v)
+      type(vec3), intent(IN) :: v
+      type(vec3) :: negate_vec
+
+      negate_vec = vec3(-v%e)
+   end function negate_vec
+
    pure module function vec_times_vec(u,v)
       type(vec3), intent(IN) :: u,v
       type(vec3) :: vec_times_vec

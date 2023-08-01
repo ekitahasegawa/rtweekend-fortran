@@ -42,6 +42,11 @@ module vec3_mod
          real(rk), value, intent(IN) :: t
          type(vec3) :: real_minus_vec
       end function real_minus_vec
+
+      pure module function negate_vec(v)
+         type(vec3), intent(IN) :: v
+         type(vec3) :: negate_vec
+      end function negate_vec
    end interface
 
    interface operator(*)
