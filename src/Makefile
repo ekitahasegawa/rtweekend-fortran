@@ -4,7 +4,20 @@ FC=gfortran
 COMPILE.f08 = $(FC) $(FCFLAGS) $(OPTFLAGS) $(TARGET_ARCH) -c
 MAKEMOD.f08 = $(FC) $(FCFLAGS) $(TARGET_ARCH) -fsyntax-only -c
 
-SOURCES=main.f90 color_mod.f90 ray_mod.f90 rtweekend_mod.f90 vec3_mod.f90 color_funs.f90 ray_funs.f90 rtweekend_funs.f90 vec3_funs.f90
+SOURCES= \
+main.f90 \
+hittable_mod.f90 \
+sphere_mod.f90 \
+color_mod.f90 \
+ray_mod.f90 \
+rtweekend_mod.f90 \
+vec3_mod.f90 \
+hittable_funs.f90 \
+sphere_funs.f90 \
+color_funs.f90 \
+ray_funs.f90 \
+rtweekend_funs.f90 \
+vec3_funs.f90
 
 ifeq ($(DEBUG),)
 	OPTFLAGS += -O2
