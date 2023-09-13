@@ -2,7 +2,6 @@
 
 FC=gfortran
 COMPILE.f08 = $(FC) $(FCFLAGS) $(OPTFLAGS) $(TARGET_ARCH) -c
-MAKEMOD.f08 = $(FC) $(FCFLAGS) $(TARGET_ARCH) -fsyntax-only -c
 
 SOURCES= \
 main.f90 \
@@ -30,26 +29,21 @@ main.out: $(subst .f90,.o,$(SOURCES))
 
 .PHONY: clean
 clean:
-	-rm -f *.o *.mod *.smod *.anc *.ppm main.out
+	-rm -f *.o *.mod *.smod *.ppm main.out
 
-%.anc: %.f90
-	$(MAKEMOD.f08) $<
-	@touch $@
+%.o: %.f90
+	$(COMPILE.f08) -o $*.o $<
 
-%.o: %.anc
-	$(COMPILE.f08) -o $*.o $(<:.anc=.f90)
-	@touch $@
-
-main.anc: rtweekend_mod.anc vec3_mod.anc color_mod.anc ray_mod.anc
-
-rtweekend_mod.anc: rtweekend_mod.mod rtweekend_mod.smod
-vec3_mod.anc: vec3_mod.mod vec3_mod.smod
-color_mod.anc: color_mod.mod color_mod.smod
-ray_mod.anc: ray_mod.mod ray_mod.smod
-
-rtweekend_funs.anc: rtweekend_mod.anc
-vec3_funs.anc: vec3_mod.anc
-color_funs.anc: color_mod.anc
-ray_funs.anc: ray_mod.anc
-
-vec3_mod.mod vec3_mod.smod rtweekend_mod.mod rtweekend_mod.smod color_mod.mod color_mod.smod ray_mod.mod ray_mod.smod: 
+main.o: rtweekend_mod.o vec3_mod.o color_mod.o ray_mod.o
+color_mod.o: vec3_mod.o
+color_funs.o: rtweekend_funs.o color_mod.o vec3_mod.o
+hittable_mod.o: vec3_mod.o
+hittable_funs.o: ray_mod.o vec3_mod.o hittable_mod.o
+ray_mod.o: rtweekend_mod.o vec3_mod.o
+ray_funs.o: ray_mod.o
+rtweekend_mod.o: 
+rtweekend_funs.o: rtweekend_mod.o
+sphere_mod.o: hittable_mod.o vec3_mod.o ray_mod.o
+sphere_funs.o: ray_mod.o sphere_mod.o
+vec3_mod.o: rtweekend_mod.o 
+vec3_funs.o: vec3_mod.o
