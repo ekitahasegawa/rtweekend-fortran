@@ -37,7 +37,7 @@ clean:
 main.o: rtweekend_mod.o vec3_mod.o color_mod.o ray_mod.o
 color_mod.o: vec3_mod.o
 color_funs.o: rtweekend_funs.o color_mod.o vec3_mod.o
-hittable_mod.o: vec3_mod.o
+hittable_mod.o: vec3_mod.o ray_mod.o
 hittable_funs.o: ray_mod.o vec3_mod.o hittable_mod.o
 ray_mod.o: rtweekend_mod.o vec3_mod.o
 ray_funs.o: ray_mod.o
@@ -46,4 +46,5 @@ rtweekend_funs.o: rtweekend_mod.o
 sphere_mod.o: hittable_mod.o vec3_mod.o ray_mod.o
 sphere_funs.o: ray_mod.o sphere_mod.o
 vec3_mod.o: rtweekend_mod.o 
-vec3_funs.o: vec3_mod.o
+vec3_funs.o: vec3_mod.o ray_mod.o
+
